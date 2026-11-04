@@ -46,25 +46,19 @@ function preparePemahaman() {
 
 export default class Scene3Read extends Phaser.Scene {
   constructor() {
-    super("Scene3Read");
+    super("Scene3Read"); // <--- INI PASTIKAN "Scene3Read"
   }
 
   create() {
-    console.log("[Scene3Read] create START");
-
     this._pxTexts = [];
     this._textRes = 0;
 
-    try {
-      this.sound.stopAll();
-      SoundFX.unlock();
-      SoundFX.stopTheme();
-      SoundFX.setEnabled(this.registry.get("audioEnabled") !== false);
-      SoundFX.cancelSpeech();
-      SoundFX.stopCue();
-    } catch (e) {
-      console.warn("[Scene3Read] audio setup error:", e);
-    }
+    this.sound.stopAll();
+    SoundFX.unlock();
+    SoundFX.stopTheme();
+    SoundFX.setEnabled(this.registry.get("audioEnabled") !== false);
+    SoundFX.cancelSpeech();
+    SoundFX.stopCue();
 
     this.indexCerita = 0;
     this.pemahaman = preparePemahaman();
@@ -77,12 +71,7 @@ export default class Scene3Read extends Phaser.Scene {
 
     this.buildBackdrop();
     this.layer = this.add.container(0, 0).setDepth(10);
-
-    try {
-      setupResponsive(this, (vw, vh) => this.onResize(vw, vh));
-    } catch (e) {
-      console.warn("[Scene3Read] setupResponsive error:", e);
-    }
+    setupResponsive(this, (vw, vh) => this.onResize(vw, vh));
 
     this.cameras.main.fadeIn(350, 0, 0, 0);
 
@@ -91,31 +80,12 @@ export default class Scene3Read extends Phaser.Scene {
 
     this.events.once("shutdown", () => {
       this.audioToken++;
-      try {
-        SoundFX.cancelSpeech();
-      } catch (e) {}
-      try {
-        SoundFX.stopCue();
-      } catch (e) {}
+      SoundFX.cancelSpeech();
+      SoundFX.stopCue();
       if (this.input.keyboard) this.input.keyboard.off("keydown", this.keyHandler);
     });
 
-    try {
-      this.mulaiCerita();
-      console.log("[Scene3Read] create END, children:", this.layer.length);
-    } catch (err) {
-      console.error("[Scene3Read] FATAL create error:", err);
-      this.add
-        .text(this.scale.width / 2, this.scale.height / 2, "SCENE 3 ERROR\n" + (err && err.message ? err.message : String(err)) + "\nCek Console (F12)", {
-          fontSize: "14px",
-          color: "#ff6666",
-          backgroundColor: "#000",
-          align: "center",
-          padding: { x: 12, y: 8 },
-        })
-        .setOrigin(0.5)
-        .setDepth(9999);
-    }
+    this.mulaiCerita();
   }
 
   buildBackdrop() {
@@ -125,9 +95,7 @@ export default class Scene3Read extends Phaser.Scene {
     } else {
       this.add.rectangle(DW / 2, DH / 2, 6000, 6000, 0x1c3a2a).setDepth(0);
     }
-    try {
-      spawnLeaves(this, 8, 2);
-    } catch (e) {}
+    spawnLeaves(this, 8, 2);
   }
 
   onResize() {
@@ -158,12 +126,8 @@ export default class Scene3Read extends Phaser.Scene {
 
   cancelAudio() {
     this.audioToken++;
-    try {
-      SoundFX.cancelSpeech();
-    } catch (e) {}
-    try {
-      SoundFX.stopCue();
-    } catch (e) {}
+    SoundFX.cancelSpeech();
+    SoundFX.stopCue();
     this.eqMode = "idle";
   }
 
@@ -178,13 +142,8 @@ export default class Scene3Read extends Phaser.Scene {
       this.time.delayedCall(500, finish);
       return;
     }
-    try {
-      const ok = SoundFX.speak(text, { onEnd: finish });
-      if (!ok) this.time.delayedCall(Math.min(5000, 1000 + text.length * 35), finish);
-    } catch (e) {
-      console.warn("[Scene3Read] say error:", e);
-      this.time.delayedCall(500, finish);
-    }
+    const ok = SoundFX.speak(text, { onEnd: finish });
+    if (!ok) this.time.delayedCall(Math.min(5000, 1000 + text.length * 35), finish);
   }
 
   mulaiCerita() {
@@ -539,12 +498,6 @@ export default class Scene3Read extends Phaser.Scene {
     this.cancelAudio();
     this.cameras.main.fadeOut(300, 0, 0, 0);
     this.cameras.main.once("camerafadeoutcomplete", () => {
-      const registered = this.scene.manager.keys;
-      if (!Object.keys(registered).includes("ResultScene")) {
-        console.warn("[Scene3Read] ResultScene tidak terdaftar — kembali ke menu.");
-        this.scene.start("MainMenuScene");
-        return;
-      }
       const auditoryScore = this.registry.get("auditoryScore") || 0;
       const auditoryTotal = this.registry.get("auditoryTotal") || 0;
       this.scene.start("ResultScene", {

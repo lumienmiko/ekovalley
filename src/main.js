@@ -1,10 +1,13 @@
 import Phaser from "phaser";
+
 import BootScene from "./scenes/BootScene.js";
 import MainMenuScene from "./scenes/MainMenuScene.js";
 import IntroScene from "./scenes/IntroScene.js";
 import Level1VScene from "./scenes/Level1VScene.js";
 import Level2AScene from "./scenes/Level2AScene.js";
 import Scene3Read from "./scenes/Scene3Read.js";
+import OptionScene from "./scenes/OptionScene.js";
+import ResultScene from "./scenes/ResultScene.js";
 
 const config = {
   type: Phaser.AUTO,
@@ -25,7 +28,7 @@ const config = {
     pixelArt: true,
     roundPixels: true,
   },
-  scene: [BootScene, MainMenuScene, IntroScene, Level1VScene, Level2AScene, Scene3Read],
+  scene: [BootScene, MainMenuScene, IntroScene, OptionScene, Level1VScene, Level2AScene, Scene3Read, ResultScene],
 };
 
 new Phaser.Game(config);
