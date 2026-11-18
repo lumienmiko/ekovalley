@@ -7,7 +7,7 @@ import { DW, DH, COL, PAL, css, makeText, drawWood, drawPanel, createButton, set
 //  Bab 1  Lembah yang asri        -> klik burung (interaktif)
 //  Bab 2  Sampah berjatuhan        -> animasi hujan sampah plastik
 //  Bab 3  Bersihkan lembah!        -> klik semua sampah (interaktif)
-//  Bab 4  Misimu & latihan         -> jalan (WASD) & ambil sampah (SPASI)
+//  Bab 4  Misimu (4 sesi VARK) & latihan jalan (WASD) & ambil sampah (SPASI)
 // =====================================================================
 const PAGES = [
   {
@@ -25,7 +25,7 @@ const PAGES = [
   },
   {
     title: "BAB 4 : MISIMU",
-    text: "Terima kasih! Tapi sampah akan datang lagi. Di Sesi VISUAL, cari sampah sesuai warna perintah. Di Sesi AUDITORY, dengarkan Miko. Ayo berlatih dulu!",
+    text: "Terima kasih! Tapi sampah akan datang lagi. Ada 4 sesi: VISUAL, AUDITORY, READ, dan KINESTETIK. Ayo latihan jalan dulu untuk sesi terakhir!",
   },
 ];
 
@@ -513,21 +513,18 @@ export default class IntroScene extends Phaser.Scene {
     const S = this.stage;
 
     // Dua papan misi
-    const board = (x, title, body, chips) => {
+    // Empat papan misi (satu per sesi VARK)
+    const board = (x, title, body) => {
       const g = this.add.graphics();
-      drawWood(g, x, 84, 420, 92, PAL.wood, { nails: true });
+      drawWood(g, x, 84, 206, 92, PAL.wood, { nails: true });
       S.add(g);
-      S.add(makeText(this, x + 22, 108, title, { size: 10, color: css(COL.gold), origin: [0, 0.5], stroke: css(COL.outline), strokeW: 4 }));
-      S.add(makeText(this, x + 22, 140, body, { size: 8, origin: [0, 0.5], align: "left", wrap: chips ? 280 : 370, spacing: 6, stroke: css(COL.outline), strokeW: 3 }));
-      if (chips) {
-        chips.forEach((c, k) => {
-          const r = this.add.rectangle(x + 340 + k * 24, 140, 18, 18, c).setStrokeStyle(3, COL.outline);
-          S.add(r);
-        });
-      }
+      S.add(makeText(this, x + 103, 106, title, { size: 8, color: css(COL.gold), stroke: css(COL.outline), strokeW: 4 }));
+      S.add(makeText(this, x + 103, 142, body, { size: 7, wrap: 176, spacing: 5, stroke: css(COL.outline), strokeW: 3 }));
     };
-    board(50, "SESI 1 : VISUAL", "Cari sampah sesuai WARNA yang diminta.", [0x439bd3, 0x5bbd64, 0xb87543]);
-    board(490, "SESI 2 : AUDITORY", "DENGARKAN Miko dan suara hutan, lalu jawab.", null);
+    board(50, "1. VISUAL", "LIHAT gambar, seret sampah ke tong yang tepat.");
+    board(268, "2. AUDITORY", "DENGARKAN Miko, lalu jawab kuisnya.");
+    board(486, "3. READ", "BACA cerita, lalu jawab pertanyaan.");
+    board(704, "4. KINESTETIK", "BERGERAK di hutan dan pungut sampah.");
 
     // Area latihan
     const area = { x1: 270, x2: 890, y1: 232, y2: 400 };
@@ -538,7 +535,7 @@ export default class IntroScene extends Phaser.Scene {
     ag.fillRect(area.x1, area.y1, area.x2 - area.x1, area.y2 - area.y1);
     S.add(ag);
 
-    S.add(makeText(this, 60, 206, "LATIHAN", { size: 10, color: css(COL.gold), origin: [0, 0.5], stroke: css(COL.outline), strokeW: 4 }));
+    S.add(makeText(this, 60, 206, "LATIHAN SESI 4", { size: 10, color: css(COL.gold), origin: [0, 0.5], stroke: css(COL.outline), strokeW: 4 }));
 
     // Tuts keyboard (menyala saat ditekan)
     const caps = {};

@@ -2,6 +2,7 @@
 import Phaser from "phaser";
 import SoundFX from "../audio/SoundFX.js";
 import { DW, DH, COL, PAL, css, makeText, drawWood, drawPanel, createButton, setupResponsive, coverScale, burst, floatText, spawnLeaves } from "../ui/PixelUI.js";
+import { setVark } from "../vark.js";
 
 const MATERI = [
   { judul: "PLASTIK TIDAK HANCUR", teks: "Plastik butuh ratusan tahun untuk terurai di alam. Satu kantong plastik yang dibuang sembarangan bisa bertahan jauh lebih lama dari umur kita." },
@@ -504,6 +505,7 @@ export default class Level2AScene extends Phaser.Scene {
 
     this.registry.set("auditoryScore", this.score);
     this.registry.set("auditoryTotal", n);
+    setVark(this, "A", this.score / n);
 
     const g = this.add.graphics();
     drawPanel(g, DW / 2 - 360, 50, 720, 500);
@@ -621,7 +623,7 @@ export default class Level2AScene extends Phaser.Scene {
   onKey(e) {
     if (this.state === "materi") {
       if (e.code === "KeyR") this.ulangMateri();
-      else if (e.code === "Enter" || e.code === "Space") this.lewatiMateriBtn?.container?.emit?.("pointerdown");
+      else if (e.code === "Enter" || e.code === "Space") this.lewatiMateriBtn?.click();
       else if (e.code === "KeyM") this.toggleSound();
       return;
     }

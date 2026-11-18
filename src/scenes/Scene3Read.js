@@ -2,6 +2,10 @@
 import Phaser from "phaser";
 import SoundFX from "../audio/SoundFX.js";
 import { DW, DH, COL, PAL, css, makeText, drawWood, drawPanel, createButton, setupResponsive, coverScale, burst, floatText, spawnLeaves } from "../ui/PixelUI.js";
+import { setVark } from "../vark.js";
+
+// SESI 3 : READ/WRITE — fokus MEMBACA. Tidak ada narasi suara Miko;
+// cerita, soal, dan pilihan jawaban ditampilkan sebagai teks.
 
 const CERITA = [
   { judul: "PAGI DI LEMBAH EKO", teks: "Matahari pagi menyinari Lembah Eko. Burung-burung berkicau riang. Miko berjalan menyusuri sungai yang jernih. Namun, ia melihat sebuah kantong plastik tersangkut di batu." },
@@ -166,10 +170,10 @@ export default class Scene3Read extends Phaser.Scene {
 
     L.add(this.title("MEMBACA JEJAK HUTAN", 92));
 
-    this.miko = this.addMiko(DW / 2 - 235, 380, 2.6);
+    this.miko = this.addMiko(DW / 2 - 290, 380, 2.4);
     this.mikoBaseY = 380;
     L.add(
-      makeText(this, DW / 2 - 235, 400, "MIKO", {
+      makeText(this, DW / 2 - 290, 400, "MIKO", {
         size: 9,
         color: css(COL.gold),
         stroke: css(COL.outline),
@@ -178,22 +182,22 @@ export default class Scene3Read extends Phaser.Scene {
     );
 
     const dg = this.add.graphics();
-    drawWood(dg, 250, 120, 660, 280, PAL.parch, { grain: false });
+    drawWood(dg, 246, 124, 574, 284, PAL.parch, { grain: false });
     L.add(dg);
 
-    this.ceritaJudul = makeText(this, 278, 142, c.judul, {
+    this.ceritaJudul = makeText(this, 272, 148, c.judul, {
       size: 10,
       color: "#8a5a30",
       origin: [0, 0.5],
     });
     L.add(this.ceritaJudul);
 
-    this.ceritaTeks = makeText(this, 278, 170, c.teks, {
-      size: 13,
+    this.ceritaTeks = makeText(this, 272, 176, c.teks, {
+      size: 12,
       color: css(COL.ink),
       origin: [0, 0],
       align: "left",
-      wrap: 604,
+      wrap: 522,
       spacing: 12,
     });
     L.add(this.ceritaTeks);
@@ -206,11 +210,13 @@ export default class Scene3Read extends Phaser.Scene {
       this.ceritaPips.push(r);
     }
     this.updateCeritaPips();
+    L.add(makeText(this, DW / 2, 452, "BACA DENGAN TELITI, NANTI ADA PERTANYAAN!", { size: 7, color: "#ffd9a0" }));
 
-    this.ulangCeritaBtn = createButton(this, DW / 2 - 130, 490, 220, 44, "ULANG HALAMAN", {
+    this.ulangCeritaBtn = createButton(this, DW / 2 - 130, 490, 220, 44, "SEBELUMNYA", {
       size: 9,
-      onClick: () => this.bacakanCerita(this.indexCerita),
+      onClick: () => this.kembaliCerita(),
     });
+    if (i === 0) this.ulangCeritaBtn.setVisible(false);
     this.lanjutCeritaBtn = createButton(this, DW / 2 + 130, 490, 220, 44, "LANJUT", {
       size: 10,
       palN: PAL.woodHover,
@@ -219,8 +225,11 @@ export default class Scene3Read extends Phaser.Scene {
     });
     L.add([this.ulangCeritaBtn.container, this.lanjutCeritaBtn.container]);
 
-    const token = this.audioToken;
-    this.say(`${c.judul}. ${c.teks}`, token);
+    this.lanjutCeritaBtn.setLabel(i + 1 < CERITA.length ? "LANJUT" : "KE PERTANYAAN");
+  }
+
+  kembaliCerita() {
+    if (this.indexCerita > 0) this.bacakanCerita(this.indexCerita - 1);
   }
 
   lanjutCerita() {
@@ -308,9 +317,9 @@ export default class Scene3Read extends Phaser.Scene {
 
   refreshPemahaman() {
     const r = this.pemahaman[this.indexTanya];
-    const reveal = this.answered;
+    // Sesi READ: pilihan jawaban selalu ditampilkan sebagai teks
     this.answerBtns.forEach((b, i) => {
-      b.setLabel(reveal ? r.answers[i] : `PILIHAN ${LETTERS[i]}`);
+      b.setLabel(r.answers[i]);
     });
     if (this.answered) return;
     this.headerText.setText(`PERTANYAAN ${this.indexTanya + 1} / ${this.pemahaman.length}`);
@@ -332,11 +341,8 @@ export default class Scene3Read extends Phaser.Scene {
   }
 
   playTanya() {
+    // Sesi READ tidak membacakan soal (dibiarkan agar kode lama tetap aman)
     this.cancelAudio();
-    const token = this.audioToken;
-    const r = this.pemahaman[this.indexTanya];
-    const a = r.answers;
-    this.say(`${r.q} Pilihan A, ${a[0]}. Pilihan B, ${a[1]}. Pilihan C, ${a[2]}.`, token);
   }
 
   answer(i) {
@@ -378,12 +384,6 @@ export default class Scene3Read extends Phaser.Scene {
     this.headerText.setText(ok ? "BENAR!" : "BELUM TEPAT");
     this.qText.setText((ok ? "Hebat! " : "Jawaban yang benar: " + r.answers[r.correct] + ".\n") + r.explain);
 
-    const feedback = (ok ? "Benar! " : `Belum tepat. Jawabannya ${r.answers[r.correct]}. `) + r.explain;
-    const token = this.audioToken;
-    this.time.delayedCall(700, () => {
-      if (token === this.audioToken) this.say(feedback, token);
-    });
-
     this.nextBtn.setLabel(this.indexTanya + 1 >= this.pemahaman.length ? "LIHAT HASIL" : "LANJUT");
     this.nextBtn.setVisible(true);
   }
@@ -404,6 +404,7 @@ export default class Scene3Read extends Phaser.Scene {
 
     this.registry.set("readScore", this.score);
     this.registry.set("readTotal", n);
+    setVark(this, "R", this.score / n);
 
     const g = this.add.graphics();
     drawPanel(g, DW / 2 - 360, 50, 720, 500);
@@ -471,8 +472,8 @@ export default class Scene3Read extends Phaser.Scene {
 
     L.add(makeText(this, DW / 2, 360, msg, { size: 11, wrap: 580, spacing: 8 }));
 
-    const result = createButton(this, DW / 2 - 130, 452, 230, 48, "LIHAT HASIL AKHIR", {
-      size: 9,
+    const result = createButton(this, DW / 2 - 130, 452, 230, 48, "LANJUT KE KINESTETIK", {
+      size: 8,
       palN: PAL.woodHover,
       palH: PAL.wood,
       onClick: () => this.keResult(),
@@ -495,22 +496,11 @@ export default class Scene3Read extends Phaser.Scene {
   }
 
   keResult() {
+    // Lanjut ke Sesi 4 : Kinestetik
     this.cancelAudio();
     this.cameras.main.fadeOut(300, 0, 0, 0);
     this.cameras.main.once("camerafadeoutcomplete", () => {
-      const auditoryScore = this.registry.get("auditoryScore") || 0;
-      const auditoryTotal = this.registry.get("auditoryTotal") || 0;
-      this.scene.start("ResultScene", {
-        score: this.score,
-        total: this.pemahaman.length,
-        mistakes: this.pemahaman.length - this.score,
-        timeLeft: 0,
-        timeTotal: 0,
-        cleared: true,
-        mode: "read",
-        auditoryScore,
-        auditoryTotal,
-      });
+      this.scene.start("Level4KScene");
     });
   }
 
@@ -524,8 +514,8 @@ export default class Scene3Read extends Phaser.Scene {
 
   onKey(e) {
     if (this.state === "cerita") {
-      if (e.code === "KeyR") this.bacakanCerita(this.indexCerita);
-      else if (e.code === "Enter" || e.code === "Space") this.lanjutCerita();
+      if (e.code === "ArrowLeft") this.kembaliCerita();
+      else if (e.code === "Enter" || e.code === "Space" || e.code === "ArrowRight") this.lanjutCerita();
       else if (e.code === "KeyM") this.toggleSound();
       return;
     }
@@ -544,9 +534,6 @@ export default class Scene3Read extends Phaser.Scene {
         case "KeyC":
           this.answer(2);
           break;
-        case "KeyR":
-          this.playTanya();
-          break;
         case "KeyM":
           this.toggleSound();
           break;
@@ -564,8 +551,6 @@ export default class Scene3Read extends Phaser.Scene {
     this.registry.set("audioEnabled", on);
     SoundFX.setEnabled(on);
     if (!on) this.cancelAudio();
-    else if (this.state === "cerita") this.bacakanCerita(this.indexCerita);
-    else if (this.state === "pemahaman" && !this.answered) this.playTanya();
   }
 
   update(time) {

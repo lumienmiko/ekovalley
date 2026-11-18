@@ -397,6 +397,39 @@ export function spawnLeaves(scene, count = 14, depth = 5) {
   for (let i = 0; i < count; i++) make(true);
 }
 
+// Bintang penilaian (muncul dengan animasi). earned = bintang emas / abu-abu.
+export function makeStar(scene, x, y, earned, delay = 0, index = 0) {
+  const g = scene.add.graphics();
+  const pts = [];
+  for (let k = 0; k < 10; k++) {
+    const a = -Math.PI / 2 + (k * Math.PI) / 5;
+    const rad = k % 2 === 0 ? 34 : 15;
+    pts.push({ x: Math.cos(a) * rad, y: Math.sin(a) * rad });
+  }
+  g.fillStyle(COL.outline, 1);
+  g.lineStyle(8, COL.outline, 1);
+  g.strokePoints(pts, true);
+  g.fillPoints(pts, true);
+  g.fillStyle(earned ? COL.gold : 0x5a4d3f, 1);
+  g.fillPoints(
+    pts.map((p) => ({ x: p.x * 0.78, y: p.y * 0.78 })),
+    true,
+  );
+  g.setPosition(x, y);
+  g.setScale(0);
+  scene.tweens.add({
+    targets: g,
+    scale: 1,
+    duration: 320,
+    delay,
+    ease: "Back.easeOut",
+    onStart: () => {
+      if (earned) SoundFX.star(index);
+    },
+  });
+  return g;
+}
+
 export function ensureCloudTexture(scene) {
   if (scene.textures.exists("px_cloud")) return;
 

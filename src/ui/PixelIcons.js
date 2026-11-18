@@ -1,0 +1,283 @@
+// src/ui/PixelIcons.js
+// Ikon sampah bergaya pixel-art yang digambar langsung lewat kode (tanpa file gambar).
+// Setiap ikon = grid teks 16 kolom. Satu karakter = satu pixel.
+//   "." = transparan, "o" = garis tepi, huruf lain = warna sesuai palet ikon.
+// Panggil ensureIcons(scene) sekali, lalu pakai key "ico_<nama>" seperti gambar biasa.
+
+const OUTLINE = 0x3b2412;
+
+export const ICONS = {
+  daun: {
+    pal: { g: 0x6fb04a, G: 0x3f7a2f, l: 0x9fd86c, s: 0x7a4a24 },
+    rows: [
+      "................",
+      "...........oooo.",
+      ".........oollgo.",
+      ".......oolllggo.",
+      "......olllggGgo.",
+      ".....ollgggGggo.",
+      "....olgggGGggo..",
+      "....oggggGgggo..",
+      "...oggggGggggo..",
+      "...ogggGgggggo..",
+      "...oggGggggoo...",
+      "...ogGgggoo.....",
+      "...oGoooo.......",
+      "..oso...........",
+      ".oso............",
+      "..o.............",
+    ],
+  },
+  apel: {
+    pal: { r: 0xd9503f, R: 0x9c3326, c: 0xf3e2b3, s: 0x7a4a24, g: 0x6fb04a },
+    rows: [
+      "................",
+      ".......os.......",
+      ".......osogo....",
+      ".....oooooo.....",
+      "....orrrrrro....",
+      "....oRrrrrRo....",
+      ".....occcco.....",
+      "......occo......",
+      "......occo......",
+      "......occo......",
+      ".....occcco.....",
+      "....orrrrrro....",
+      "....orrrrrro....",
+      "....oRrrrrRo....",
+      ".....oooooo.....",
+      "................",
+    ],
+  },
+  wortel: {
+    pal: { g: 0x6fb04a, n: 0xf08a24, N: 0xb85e14 },
+    rows: [
+      "................",
+      "........g.g.....",
+      ".......ggogg....",
+      "......oggggo....",
+      ".....onnnnno....",
+      ".....onnnnNo....",
+      ".....oNnnnno....",
+      "......onnnNo....",
+      "......onnnno....",
+      "......oNnnno....",
+      ".......onno.....",
+      ".......onNo.....",
+      ".......onno.....",
+      "........oo......",
+      "................",
+      "................",
+    ],
+  },
+  pisang: {
+    pal: { y: 0xf5d442, Y: 0xc9a227, b: 0x7a4a24, c: 0xfff3cf },
+    rows: [
+      "................",
+      "................",
+      "......obo.......",
+      "......oco.......",
+      ".....occco......",
+      ".....occco......",
+      "....oYccco......",
+      "...oyyoccoyo....",
+      "..oyyo.ocoyyo...",
+      "..oyo..ocooyyo..",
+      ".oyyo..oo..oyYo.",
+      ".oyo........oyo.",
+      ".oo.........oo..",
+      "................",
+      "................",
+      "................",
+    ],
+  },
+  botol: {
+    pal: { w: 0xbfe6f5, W: 0x8cc8e0, b: 0x2f6fb0, B: 0x439bd3, c: 0xfff3cf },
+    rows: [
+      "......oooo......",
+      "......obbo......",
+      "......oooo......",
+      "......owWo......",
+      ".....owwwWo.....",
+      "....owwwwwWo....",
+      "....owwwwwWo....",
+      "....oBBBBBBo....",
+      "....oBccccBo....",
+      "....oBBBBBBo....",
+      "....owwwwwWo....",
+      "....owwwwwWo....",
+      "....owwwwwWo....",
+      "....oWWWWWWo....",
+      "....oooooooo....",
+      "................",
+    ],
+  },
+  kantong: {
+    pal: { w: 0xf4f4f0, W: 0xcfcfc8 },
+    rows: [
+      "................",
+      "...ooo....ooo...",
+      "..ow.wo..ow.wo..",
+      "..ow.wo..ow.wo..",
+      "..owwwoooowwwo..",
+      "..owwwwwwwwwwo..",
+      ".owwwwwwwwwwwwo.",
+      ".owwwWwwwwWwwwo.",
+      ".owwwwWwwwwwWwo.",
+      ".owwwwwwwwwwwwo.",
+      ".oWwwwwwwwwwwWo.",
+      ".oWWwwwwwwwwWWo.",
+      "..oWWWWWWWWWWo..",
+      "...oooooooooo...",
+      "................",
+      "................",
+    ],
+  },
+  kaleng: {
+    pal: { r: 0xd9503f, R: 0x9c3326, s: 0xd8d8d8, S: 0x8a8a8a, w: 0xfff3cf },
+    rows: [
+      "................",
+      ".....oooooo.....",
+      "....osSssSso....",
+      "....oSssssSo....",
+      "....oorrrroo....",
+      "....orrrrrRo....",
+      "....owwwwwRo....",
+      "....orwwwrRo....",
+      "....orrwrrRo....",
+      "....orrrrrRo....",
+      "....orrrrrRo....",
+      "....orrrrrRo....",
+      "....oSssssSo....",
+      ".....oooooo.....",
+      "................",
+      "................",
+    ],
+  },
+  gelas: {
+    pal: { w: 0xe6f4fa, W: 0xa9cfe0, p: 0xe85a8a },
+    rows: [
+      "..........op....",
+      ".........opo....",
+      "........opo.....",
+      "...oooooopoooo..",
+      "...owwwwwpwwwo..",
+      "...oWwwwwpwwWo..",
+      "....owwwwpwwo...",
+      "....oWwwwpwWo...",
+      "....owwwwwwwo...",
+      ".....oWwwwWo....",
+      ".....owwwwwo....",
+      ".....oWWWWWo....",
+      ".....ooooooo....",
+      "................",
+      "................",
+      "................",
+    ],
+  },
+  baterai: {
+    pal: { k: 0x2b2b2b, y: 0xffd24a, s: 0xd8d8d8 },
+    rows: [
+      "................",
+      "......oooo......",
+      "......osso......",
+      "....oooooooo....",
+      "....okkkkkko....",
+      "....okkkkkko....",
+      "....okkyykko....",
+      "....okyyyyko....",
+      "....okkyykko....",
+      "....oyyyyyyo....",
+      "....oyyyyyyo....",
+      "....oyyyyyyo....",
+      "....oyyyyyyo....",
+      "....osssssso....",
+      "....oooooooo....",
+      "................",
+    ],
+  },
+  bohlam: {
+    pal: { g: 0xfff6b0, w: 0xffffff, s: 0xd8d8d8, S: 0x8a8a8a },
+    rows: [
+      "................",
+      ".....oooooo.....",
+      "....owwgggwo....",
+      "...owggggggo....",
+      "...ogggggggo....",
+      "...ogggggggo....",
+      "...ogggggggo....",
+      "....ogggggo.....",
+      ".....ogggo......",
+      ".....ossso......",
+      ".....oSSSo......",
+      ".....ossso......",
+      ".....oSSSo......",
+      "......ooo.......",
+      "................",
+      "................",
+    ],
+  },
+  semprot: {
+    pal: { r: 0xd9503f, R: 0x9c3326, s: 0xd8d8d8, S: 0x8a8a8a, y: 0xffd24a, k: 0x2b2b2b },
+    rows: [
+      "................",
+      "......oo........",
+      "......osoo......",
+      ".....ooooo......",
+      ".....osso.......",
+      "....oooooo......",
+      "....orrrrRo.....",
+      "....oyyyyRo.....",
+      "....oykkyRo.....",
+      "....oyyyyRo.....",
+      "....orrrrRo.....",
+      "....orrrrRo.....",
+      "....orrrrRo.....",
+      "....oSSSSSo.....",
+      ".....ooooo......",
+      "................",
+    ],
+  },
+  obat: {
+    pal: { s: 0xd8d8d8, p: 0xe85a8a },
+    rows: [
+      "................",
+      "................",
+      "..oooooooooooo..",
+      "..osssssssssso..",
+      "..osopossopsso..",
+      "..osopossopsso..",
+      "..osssssssssso..",
+      "..osopossopsso..",
+      "..osopossopsso..",
+      "..osssssssssso..",
+      "..osopossopsso..",
+      "..osopossopsso..",
+      "..osssssssssso..",
+      "..oooooooooooo..",
+      "................",
+      "................",
+    ],
+  },
+};
+
+export function ensureIcons(scene) {
+  Object.entries(ICONS).forEach(([name, def]) => {
+    const key = "ico_" + name;
+    if (scene.textures.exists(key)) return;
+
+    const g = scene.make.graphics({ x: 0, y: 0, add: false });
+    def.rows.forEach((row, y) => {
+      for (let x = 0; x < 16; x++) {
+        const ch = row[x] || ".";
+        if (ch === ".") continue;
+        const color = ch === "o" ? OUTLINE : def.pal[ch];
+        if (color === undefined) continue;
+        g.fillStyle(color, 1);
+        g.fillRect(x, y, 1, 1);
+      }
+    });
+    g.generateTexture(key, 16, 16);
+    g.destroy();
+  });
+}

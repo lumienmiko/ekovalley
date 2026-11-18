@@ -3,14 +3,14 @@ import SoundFX from "../audio/SoundFX.js";
 import { DW, DH, COL, PAL, css, makeText, drawWood, drawPanel, createButton, setupResponsive, burst, floatText } from "../ui/PixelUI.js";
 
 // =====================================================================
-// ResultScene : layar penilaian setelah Sesi 1 (Visual) selesai.
-// Dipanggil oleh Level1VScene lewat scene.launch("ResultScene", data)
+// ResultScene : layar penilaian setelah Sesi 4 (Kinestetik) selesai.
+// Dipanggil oleh Level4KScene lewat scene.launch("ResultScene", data)
 // data = { score, total, mistakes, timeLeft, timeTotal, cleared }
 // =====================================================================
 const RANKS = [
-  { stars: 3, title: "PAHLAWAN HUTAN", msg: "Luar biasa! Matamu jeli, lembah pun bersih berkilau." },
+  { stars: 3, title: "PAHLAWAN HUTAN", msg: "Luar biasa! Gerakmu lincah, lembah pun bersih berkilau." },
   { stars: 2, title: "PENJAGA HUTAN", msg: "Bagus! Sedikit lagi lembah bersih sempurna." },
-  { stars: 1, title: "RELAWAN HIJAU", msg: "Lumayan! Baca warna perintah lebih teliti, ya." },
+  { stars: 1, title: "RELAWAN HIJAU", msg: "Lumayan! Bergerak lebih cepat dan cek warna perintahnya, ya." },
   { stars: 0, title: "PENGAMAT PEMULA", msg: "Jangan menyerah! Hutan masih menunggu bantuanmu." },
 ];
 
@@ -52,10 +52,10 @@ export default class ResultScene extends Phaser.Scene {
 
     const stars = this.pct >= 0.6 ? 3 : this.pct >= 0.33 ? 2 : this.pct >= 0.13 ? 1 : 0;
     this.rank = RANKS.find((x) => x.stars === stars);
-    this.registry.set("visualStars", stars);
+    this.registry.set("kinestheticStars", stars);
     this.registry.set("gold", this.gold);
 
-    // Musik Level 1 dihentikan; suara efek dibuat lewat SoundFX
+    // Musik Level 4 dihentikan; suara efek dibuat lewat SoundFX
     this.sound.stopAll();
     SoundFX.unlock();
     SoundFX.setEnabled(this.registry.get("audioEnabled") !== false);
@@ -96,7 +96,7 @@ export default class ResultScene extends Phaser.Scene {
     // Pita judul
     const ribbon = this.add.graphics().setDepth(6);
     drawWood(ribbon, cx - 270, 8, 540, 52, PAL.woodHover, { grain: false });
-    makeText(this, cx, 34, r.cleared ? "HUTAN BERSIH!" : "SESI VISUAL SELESAI!", {
+    makeText(this, cx, 34, r.cleared ? "HUTAN BERSIH!" : "SESI KINESTETIK SELESAI!", {
       size: 18,
       color: css(COL.cream),
       stroke: css(COL.outline),
@@ -142,7 +142,7 @@ export default class ResultScene extends Phaser.Scene {
     makeText(this, cx, 438, Phaser.Utils.Array.GetRandom(FACTS), { size: 8, color: "#e8f5e9", wrap: 560, spacing: 8 }).setDepth(7);
 
     // Tombol
-    this.nextBtn = createButton(this, cx, 486, 460, 52, "LANJUT KE SESI AUDITORY", {
+    this.nextBtn = createButton(this, cx, 486, 460, 52, "LIHAT HASIL GAYA BELAJAR", {
       size: 13,
       palN: PAL.woodHover,
       palH: PAL.wood,
@@ -294,7 +294,7 @@ export default class ResultScene extends Phaser.Scene {
 
       if (SoundFX.enabled) {
         this.time.delayedCall(900, () => {
-          if (!this.leaving) SoundFX.speak(`Sesi visual selesai. Kamu mengumpulkan ${r.score} sampah. ${this.rank.msg}`);
+          if (!this.leaving) SoundFX.speak(`Sesi kinestetik selesai. Kamu mengumpulkan ${r.score} sampah. ${this.rank.msg}`);
         });
       }
     });
@@ -334,18 +334,18 @@ export default class ResultScene extends Phaser.Scene {
   goNext() {
     if (this.leaving) return;
 
-    // Pengaman: pastikan Level2AScene terdaftar di main.js
-    if (!this.scene.get("Level2AScene")) {
-      this.toast('Level2AScene belum terdaftar. Periksa "src/main.js".');
-      console.error('Scene "Level2AScene" tidak ditemukan. Daftarkan di src/main.js.');
+    // Pengaman: pastikan HasilVARKScene terdaftar di main.js
+    if (!this.scene.get("HasilVARKScene")) {
+      this.toast('HasilVARKScene belum terdaftar. Periksa "src/main.js".');
+      console.error('Scene "HasilVARKScene" tidak ditemukan. Daftarkan di src/main.js.');
       return;
     }
 
-    this.leaveTo("Level2AScene");
+    this.leaveTo("HasilVARKScene");
   }
 
   replay() {
-    this.leaveTo("Level1VScene");
+    this.leaveTo("Level4KScene");
   }
 
   toMenu() {
@@ -359,7 +359,7 @@ export default class ResultScene extends Phaser.Scene {
 
     this.cameras.main.fadeOut(300, 0, 0, 0);
     this.cameras.main.once("camerafadeoutcomplete", () => {
-      this.scene.stop("Level1VScene");
+      this.scene.stop("Level4KScene");
       this.scene.start(key);
     });
   }

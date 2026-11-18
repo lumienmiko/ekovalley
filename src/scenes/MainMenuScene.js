@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import SoundFX from "../audio/SoundFX.js";
 import { DW, DH, COL, PAL, css, makeText, drawWood, drawPanel, createButton, setupResponsive, coverScale, spawnLeaves, ensureCloudTexture } from "../ui/PixelUI.js";
+import { resetVark } from "../vark.js";
 
 const TIPS = [
   "TIPS: Plastik butuh ratusan tahun untuk terurai.",
@@ -293,9 +294,8 @@ export default class MainMenuScene extends Phaser.Scene {
     this.starting = true;
 
     // Reset skor saat memulai permainan baru
-    this.registry.set("varkScores", { V: 0, A: 0, R: 0, K: 0 });
-    this.registry.remove("visualScore");
-    this.registry.remove("auditoryScore");
+    resetVark(this);
+    ["visualScore", "visualTotal", "auditoryScore", "auditoryTotal", "readScore", "readTotal", "kinestheticScore", "kinestheticTotal"].forEach((k) => this.registry.remove(k));
 
     SoundFX.stopTheme();
 
@@ -348,10 +348,13 @@ export default class MainMenuScene extends Phaser.Scene {
     add("Bersihkan hutan dari sampah plastik dan jadilah Penjaga Hutan sejati!", { gap: 18 });
 
     add("KONTROL", head);
-    add("WASD / PANAH : Berjalan\nSPASI : Ambil sampah\nENTER : Pilih menu", { gap: 18 });
+    add("MOUSE : Seret & klik\nWASD / PANAH : Berjalan    SPASI : Ambil sampah\nENTER : Pilih menu", { gap: 18 });
 
     add("SESI BELAJAR", head);
-    add("1. VISUAL : cari sampah sesuai warna yang diminta.\n2. AUDITORY : dengarkan Miko dan suara hutan, lalu pilih jawaban.", { gap: 18 });
+    add(
+      "1. VISUAL : lihat gambar, seret sampah ke tong yang tepat.\n2. AUDITORY : dengarkan Miko, lalu pilih jawaban.\n3. READ : baca cerita, lalu jawab pertanyaan.\n4. KINESTETIK : jelajahi hutan dan pungut sampah.",
+      { size: 9, gap: 18 },
+    );
 
     const close = makeText(this, DW / 2, 512, "KLIK DI MANA SAJA UNTUK MENUTUP", { size: 8, color: css(COL.cream), stroke: css(COL.outline), strokeW: 4 });
     layer.add(close);
@@ -419,12 +422,12 @@ export default class MainMenuScene extends Phaser.Scene {
 
         // ---- Jalan pintas untuk uji coba (boleh dihapus) ----
         case "Digit1":
-          SoundFX.stopTheme();
-          this.scene.start("Level1VScene");
-          break;
         case "Digit2":
+        case "Digit3":
+        case "Digit4":
+        case "Digit5":
           SoundFX.stopTheme();
-          this.scene.start("Level2AScene");
+          this.scene.start(["Level1VScene", "Level2AScene", "Scene3Read", "Level4KScene", "HasilVARKScene"][Number(e.code.slice(5)) - 1]);
           break;
         default:
           break;
